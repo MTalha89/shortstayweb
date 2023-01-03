@@ -13,17 +13,37 @@
     <div class="form-book">
         <div class="form-search-rooms">
             <div class="d-flex form-search-row">
-                <div class="col-md-4">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <i class="fa fa-angle-down arrow"></i>
+                        <div class="form-content dropdown-toggle" data-toggle="dropdown">
+                            <label class="form-label">{{__('Pricing')}}</label>
+                            <div class="render">
+                                @{{pricing == "per-day" ? "Per Day" : "Per Hour"}}
+                            </div>
+                        </div>
+                        <div class="dropdown-menu select-guests-dropdown" >
+                            <div class="dropdown-item-row">
+                                <div class="label" data-input="per-day" @click="addPricingType('day')">{{__('Per Day')}}</div>
+                            </div>
+                            <div class="dropdown-item-row">
+                                <div class="label" data-input="per-hour" @click="addPricingType('hour')">{{__('Per Hour')}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
                     <div class="form-group form-date-field form-date-search " @click="openStartDate" data-format="{{get_moment_date_format()}}">
                         <i class="fa fa-angle-down arrow"></i>
                         <input type="text" class="start_date" ref="start_date" style="height: 1px; visibility: hidden">
                         <div class="date-wrapper form-content" >
                             <label class="form-label">{{__("Check In - Out")}}</label>
-                            <div class="render check-in-render" v-html="start_date_html"></div>
+                            <div class="render check-in-render" v-if="pricing == 'per-day'" v-html="start_date_html"></div>
+                            <div class="render check-in-render" v-if="pricing == 'per-hour'" v-html="start_date_time_html"></div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
+                </div>              
+                <div class="col-md-3">
                     <div class="form-group">
                         <i class="fa fa-angle-down arrow"></i>
                         <div class="form-content dropdown-toggle" data-toggle="dropdown">
@@ -63,8 +83,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4 col-btn">
+                </div>            
+                <div class="col-md-2 col-btn">
                     <div class="g-button-submit">
                         <button class="btn btn-primary btn-search" @click="checkAvailability" :class="{'loading':onLoadAvailability}" type="submit">
                             {{__("Check Availability")}}

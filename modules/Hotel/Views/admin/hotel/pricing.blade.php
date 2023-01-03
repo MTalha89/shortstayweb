@@ -43,6 +43,13 @@
                             <i>{{ __("Leave blank if you dont need to set minimum day stay option") }}</i>
                         </div>
                     </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="control-label">{{__("Minimum hour stay requirements")}}</label>
+                            <input type="number" name="min_hour_stays" class="form-control" value="{{$row->min_hour_stays}}" placeholder="{{__("Ex: 2")}}">
+                            <i>{{ __("Leave blank if you dont need to set minimum hour stay option") }}</i>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

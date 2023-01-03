@@ -3,7 +3,6 @@
 
 	namespace Modules\User\Controllers\Auth;
 
-
 	use App\Helpers\ReCaptchaEngine;
     use Illuminate\Auth\Events\Registered;
     use Illuminate\Http\Request;
@@ -20,6 +19,7 @@
 
 	    public function register(Request $request)
         {
+            
             $rules = [
                 'first_name' => [
                     'required',
@@ -31,12 +31,29 @@
                     'string',
                     'max:255'
                 ],
-                'email'      => [
+                'email'  => [
                     'required',
                     'string',
                     'email',
                     'max:255',
                     'unique:users'
+                ],
+                'cnic'  => [
+                    'string',
+                    'max:255',
+                    'unique:users'
+                ],
+                'city'  => [
+                    'string',
+                    'max:255'
+                ],
+                'address'  => [
+                    'string',
+                    'max:255'
+                ],
+                'birthday'  => [
+                    'date',
+                    'max:255'
                 ],
                 'password'   => [
                     'required',
@@ -73,12 +90,16 @@
             } else {
 
                 $user = \App\User::create([
-                    'first_name' => $request->input('first_name'),
-                    'last_name'  => $request->input('last_name'),
-                    'email'      => $request->input('email'),
-                    'password'   => Hash::make($request->input('password')),
+                    'first_name'=> $request->input('first_name'),
+                    'last_name' => $request->input('last_name'),
+                    'email'     => $request->input('email'),
+                    'password'  => Hash::make($request->input('password')),
+                    'birthday'  => $request->input('birthday'),
+                    'cnic'      => $request->input('cnic'),
+                    'address'   => $request->input('address'),
+                    'city'      => $request->input('city'),
                     'status'    => $request->input('publish','publish'),
-                    'phone'    => $request->input('phone'),
+                    'phone'     => $request->input('phone'),
                 ]);
                 event(new Registered($user));
                 Auth::loginUsingId($user->id);
@@ -95,5 +116,5 @@
                     'redirect' => $request->input('redirect') ?? $request->headers->get('referer') ?? url(app_get_locale(false, '/'))
                 ], 200);
             }
+         }
         }
-    }

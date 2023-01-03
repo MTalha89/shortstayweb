@@ -174,7 +174,7 @@ function get_image_tag($image_id,$size = 'thumb',$options = []){
     }
 }
 function get_date_format(){
-    return setting_item('date_format','m/d/Y');
+    return setting_item('date_format','m/d/Y hh:mm');
 }
 function get_moment_date_format(){
     return php_to_moment_format(get_date_format());
@@ -1052,6 +1052,17 @@ function periodDate($startDate,$endDate,$day = true,$interval='1 day'){
     $end = new \DateTime($endDate);
     if($day){
         $end = $end->modify('+1 day');
+    }
+    $interval = \DateInterval::createFromDateString($interval);
+    $period = new \DatePeriod($begin, $interval, $end);
+    return $period;
+}
+
+function periodHour($startDate,$endDate,$day = true,$interval='1 hour'){
+    $begin = new \DateTime($startDate);
+    $end = new \DateTime($endDate);
+    if($day){
+        $end = $end->modify('+1 hour');
     }
     $interval = \DateInterval::createFromDateString($interval);
     $period = new \DatePeriod($begin, $interval, $end);

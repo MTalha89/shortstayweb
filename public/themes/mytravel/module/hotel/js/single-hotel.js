@@ -23,6 +23,7 @@
             number_of_guests:0,
             step:1,
             start_date_obj:'',
+            pricing: 'per-day',
             adults:1,
             children:0,
             allEvents:[],
@@ -214,11 +215,12 @@
 				maxSpan: {
 					"days": 30
 				},
+                timePicker: true,
                 showCalendar: false,
                 sameDate: true,
                 autoApply           : true,
                 disabledPast        : true,
-                dateFormat          : bookingCore.date_format,
+                dateFormat          : 'YYYY-MM-DD HH:MM',
                 enableLoading       : true,
                 showEventTooltip    : true,
                 classNotAvailable   : ['disabled', 'off'],
@@ -232,7 +234,7 @@
                 isInvalidDate:function (date) {
                     for(var k = 0 ; k < me.allEvents.length ; k++){
                         var item = me.allEvents[k];
-                        if(item.start == date.format('YYYY-MM-DD')){
+                        if(item.start == date.format('YYYY-MM-DD HH:MM')){
                             return item.active ? false : true;
                         }
                     }
@@ -250,9 +252,10 @@
                         if(picker.endDate.diff(picker.startDate,'day') <=0){
 							picker.endDate.add(1,'day');
                         }
-                        me.start_date = picker.startDate.format('YYYY-MM-DD');
-                        me.end_date = picker.endDate.format('YYYY-MM-DD');
+                        me.start_date = picker.startDate.format('YYYY-MM-DD HH:MM');
+                        me.end_date = picker.endDate.format('YYYY-MM-DD HH:MM');
                         me.start_date_html = picker.startDate.format(bookingCore.date_format) +' <i class="fa fa-long-arrow-right" style="font-size: inherit"></i> '+ picker.endDate.format(bookingCore.date_format);
+                        me.start_date_time_html = picker.startDate.format('YYYY-MM-DD HH:MM') +' <i class="fa fa-long-arrow-right" style="font-size: inherit"></i> '+ picker.endDate.format('YYYY-MM-DD HH:MM');
                         // me.handleTotalPrice();
                     })
             })
@@ -278,6 +281,17 @@
                 }
 
                 return true;
+            },
+            addPricingType(type){
+                switch (type){
+                    case "day":
+                        this.pricing = "per-day";
+                    break;
+                    case "hour":
+                        this.pricing = "per-hour";
+                    break;
+                }
+                // this.handleTotalPrice();
             },
             addPersonType(type){
                 switch (type){
@@ -323,6 +337,7 @@
 						firstLoad:me.firstLoad,
                         adults:this.adults,
                         children:this.children,
+                        pricing: this.pricing
                     },
                     method:'post',
                     success:function (json) {
@@ -364,11 +379,12 @@
                     data:{
                         service_id:this.id,
                         service_type:"hotel",
-                        start_date:this.start_date,
-                        end_date:this.end_date,
+                        start_date:this.start_date+":00",
+                        end_date:this.end_date+":00",
                         extra_price:this.extra_price,
                         adults:this.adults,
                         children:this.children,
+                        pricing: this.pricing,
                         rooms:_.map(this.rooms,function (item) {
                             return _.pick(item,['id','number_selected'])
                         })

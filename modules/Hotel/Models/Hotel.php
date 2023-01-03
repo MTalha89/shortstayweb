@@ -378,8 +378,9 @@ class Hotel extends Bookable
             'rooms'      => 'required',
             'adults'     => 'required|integer|min:1',
             'children'   => 'required|integer|min:0',
-            'start_date' => 'required|date_format:Y-m-d',
-            'end_date'   => 'required|date_format:Y-m-d'
+            'start_date' => 'required|date_format:Y-m-d H:i:s',
+            'end_date'   => 'required|date_format:Y-m-d H:i:s',
+            'pricing'    => 'required',
         ];
         // Validation
         if (!empty($rules)) {
@@ -397,7 +398,7 @@ class Hotel extends Bookable
         }
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
-        if (strtotime($start_date) < strtotime(date('Y-m-d 00:00:00')) or strtotime($end_date) - strtotime($start_date) < DAY_IN_SECONDS) {
+        if (strtotime($start_date) < strtotime(date('Y-m-d H:i:s')) or strtotime($end_date) - strtotime($start_date) < DAY_IN_SECONDS) {
             return $this->sendError(__("Your selected dates are not valid"));
         }
         if (!$this->checkBusyDate($start_date, $end_date)) {
@@ -544,6 +545,7 @@ class Hotel extends Bookable
             ],
             'start_date'      => request()->input('start') ?? "",
             'start_date_html' => $date_html ?? __('Please select'),
+            'start_date_time_html' => $date_html ?? __('Please select'),
             'end_date'        => request()->input('end') ?? "",
             'deposit'=>$this->isDepositEnable(),
             'deposit_type'=>$this->getDepositType(),
@@ -846,7 +848,7 @@ class Hotel extends Bookable
         $res = [];
         $this->tmp_rooms = [];
         foreach ($rooms as $room) {
-            if ($room->isAvailableAt($filters)) {
+            if ($room->pricing == $filters['pricing'] && $room->isAvailableAt($filters)) {
                 $translation = $room->translateOrOrigin(app()->getLocale());
                 $terms = Terms::getTermsByIdForAPI($room->terms->pluck('term_id'));
                 $term_features = [];
@@ -877,11 +879,12 @@ class Hotel extends Bookable
                     'number_selected' => 0,
                     'number'          => (int)$room->tmp_number ?? 0,
                     'min_day_stays'   => $room->min_day_stays ?? 0,
+                    'min_hour_stays'   => $room->min_hour_stays ?? 0,
                     'image'           => $room->image_id ? get_file_url($room->image_id, 'medium') : '',
                     'tmp_number'      => $room->tmp_number,
                     'gallery'         => $room->getGallery(),
-                    'price_html'      => format_money($room->tmp_price) . '<span class="unit">/' . ($room->tmp_nights ? __(':count nights', ['count' => $room->tmp_nights]) : __(":count night", ['count' => $room->tmp_nights])) . '</span>',
-                    'price_text'      => format_money($room->tmp_price) . '/' . ($room->tmp_nights ? __(':count nights', ['count' => $room->tmp_nights]) : __(":count night", ['count' => $room->tmp_nights])),
+                    'price_html'      => format_money($room->tmp_price) . '<span class="unit">/' . ($room->tmp_nights ? __($filters['pricing'] == "per-day" ? ':count nights' : ':count hours', ['count' => $room->tmp_nights]) : __($filters['pricing'] == "per-day" ? ':count night' : ':count hour', ['count' => $room->tmp_nights])) . '</span>',
+                    'price_text'      => format_money($room->tmp_price) . '/' . ($room->tmp_nights ? __($filters['pricing'] == "per-day" ? ':count nights' : ':count hours', ['count' => $room->tmp_nights]) : __($filters['pricing'] == "per-day" ? ':count night' : ':count hour', ['count' => $room->tmp_nights])),
                     'terms'           => $terms,
                     'term_features'   => $term_features
                 ];

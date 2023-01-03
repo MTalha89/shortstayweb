@@ -127,9 +127,10 @@ class HotelController extends Controller
         if(\request()->input('firstLoad') == "false") {
             $rules = [
                 'hotel_id'   => 'required',
-                'start_date' => 'required:date_format:Y-m-d',
-                'end_date'   => 'required:date_format:Y-m-d',
+                'start_date' => 'required:date_format:Y-m-d h:m',
+                'end_date'   => 'required:date_format:Y-m-d h:m',
                 'adults'     => 'required',
+                'pricing'     => 'required',
             ];
             $validator = \Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -150,9 +151,16 @@ class HotelController extends Controller
         }
 
         if(\request()->input('firstLoad') == "false") {
+            
             $numberDays = abs(strtotime(\request('end_date')) - strtotime(\request('start_date'))) / 86400;
-            if(!empty($hotel->min_day_stays) and  $numberDays < $hotel->min_day_stays){
+            $numberHours = abs(strtotime(\request('end_date')) - strtotime(\request('start_date'))) / 3600;
+            
+            if(request('pricing') == 'per-day' and !empty($hotel->min_day_stays) and  $numberDays < $hotel->min_day_stays){
                 return $this->sendError(__("You must to book a minimum of :number days",['number'=>$hotel->min_day_stays]));
+            }
+
+            if(request('pricing') == 'per-hour' and !empty($hotel->min_hour_stays) and  $numberHours < $hotel->min_hour_stays){
+                return $this->sendError(__("You must to book a minimum of :number hours",['number'=>$hotel->min_hour_stays]));
             }
 
             if(!empty($hotel->min_day_before_booking)){
@@ -164,7 +172,7 @@ class HotelController extends Controller
         }
 
         $rooms = $hotel->getRoomsAvailability(request()->input());
-
+        
         return $this->sendSuccess([
             'rooms'=>$rooms
         ]);

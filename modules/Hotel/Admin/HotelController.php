@@ -231,6 +231,7 @@ class HotelController extends AdminController
             'status',
             'min_day_before_booking',
             'min_day_stays',
+            'min_hour_stays',
             'enable_service_fee',
             'service_fee',
             'surrounding',

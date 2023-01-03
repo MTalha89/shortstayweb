@@ -71,9 +71,9 @@ class HotelRoom extends Bookable
         $allDates = [];
         $tmp_price = 0;
         $tmp_night = 0;
-        $period = periodDate($filters['start_date'],$filters['end_date'],true);
+        $period = $filters['pricing'] == "per-day" ? periodDate($filters['start_date'],$filters['end_date'],true) : periodHour($filters['start_date'],$filters['end_date'],true);
         foreach ($period as $dt){
-            $allDates[$dt->format('Y-m-d')] = [
+            $allDates[$dt->format('Y-m-d hh:mm')] = [
                 'number'=>$this->number,
                 'price'=>$this->price
             ];
@@ -85,9 +85,9 @@ class HotelRoom extends Bookable
             {
                 if(!$row->active or !$row->number or !$row->price) return false;
 
-                if(!array_key_exists(date('Y-m-d',strtotime($row->start_date)),$allDates)) continue;
+                if(!array_key_exists(date('Y-m-d hh:mm',strtotime($row->start_date)),$allDates)) continue;
 
-                $allDates[date('Y-m-d',strtotime($row->start_date))] = [
+                $allDates[date('Y-m-d hh:mm',strtotime($row->start_date))] = [
                     'number'=>$row->number,
                     'price'=>$row->price
                 ];
@@ -97,9 +97,9 @@ class HotelRoom extends Bookable
         $roomBookings = $this->getBookingsInRange($filters['start_date'],$filters['end_date']);
         if(!empty($roomBookings)){
             foreach ($roomBookings as $roomBooking){
-                $period = periodDate($roomBooking->start_date,$roomBooking->end_date,false);
+                $period = $filters['pricing'] == "per-day" ? periodDate($roomBooking->start_date,$roomBooking->end_date,false) : periodHour($roomBooking->start_date,$roomBooking->end_date,false);
                 foreach ($period as $dt){
-                    $date = $dt->format('Y-m-d');
+                    $date = $filters['pricing'] == "per-day" ? $dt->format('Y-m-d') : $dt->format('Y-m-d hh:mm');
                     if(!array_key_exists($date,$allDates)) continue;
                     $allDates[$date]['number'] -= $roomBooking->number;
                     if($allDates[$date]['number'] <= 0){
@@ -121,8 +121,8 @@ class HotelRoom extends Bookable
 			    if(!empty($eventRange)){
 				    foreach ($eventRange as $item=>$value){
 					    if(!empty($date = $value->dtstart_array[2])){
-						    $allDates[date('Y-m-d',$date)]['number'] -= 1;
-						    if($allDates[date('Y-m-d',$date)]['number'] <= 0){
+						    $allDates[date('Y-m-d hh:mm',$date)]['number'] -= 1;
+						    if($allDates[date('Y-m-d hh:mm',$date)]['number'] <= 0){
 							    return false;
 						    }
 					    }

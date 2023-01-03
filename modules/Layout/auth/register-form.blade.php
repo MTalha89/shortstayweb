@@ -31,6 +31,47 @@
         <i class="input-icon field-icon icofont-ui-password"></i>
         <span class="invalid-feedback error error-password"></span>
     </div>
+    <div class="row">
+        <div class="col-lg-9 col-md-12">
+    <div class="form-group">
+        <input type="text" class="form-control" name="cnic" autocomplete="off" placeholder="{{__('CNIC')}}">
+        <i class="input-icon field-icon icofont-mail"></i>
+        <span class="invalid-feedback error error-cnic"></span>
+    </div>
+    </div>
+    <div class="col-lg-3 col-md-12">
+        <label for="file-upload" class="custom-file-upload" style=" border: 1px solid #ccc;
+    display: inline-block;
+   padding: 11px 17px;
+    cursor: pointer;">
+    <i class="fa fa-cloud-upload"></i> CNIC
+</label>
+<input id="file-upload" type="file" style="display:none;"/>
+        </div>
+    </div>
+     <div class="row">
+        <div class="col-lg-4 col-md-12">
+    <div class="form-group">
+        <input type="date" class="form-control" name="birthday" autocomplete="off" placeholder="{{__('BirthDay')}}">
+        <i class="input-icon field-icon icofont-waiter-alt"></i>
+                <span class="invalid-feedback error error-birthday"></span>
+    </div>
+    </div>
+    <div class="col-lg-4 col-md-12">
+    <div class="form-group">
+        <input type="text" class="form-control" name="address" autocomplete="off" placeholder="{{__('Address')}}">
+         <i class="input-icon field-icon icofont-mail"></i>
+        <span class="invalid-feedback error error-address"></span>
+    </div>
+    </div>
+    <div class="col-lg-4 col-md-12">
+       <div class="form-group">
+        <input type="text" class="form-control" name="city" autocomplete="off" placeholder="{{__('City')}}">
+         <i class="input-icon field-icon icofont-mail"></i>
+        <span class="invalid-feedback error error-city"></span>
+    </div>
+        </div>
+    </div>
     <div class="form-group">
         <label for="term">
             <input id="term" type="checkbox" name="term" class="mr5">

@@ -1,5 +1,14 @@
 @if(is_default_lang())
     <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>{{__("Pricing")}} <span class="text-danger">*</span></label>
+                <select required name="pricing" class="form-control">
+                    <option @if($row->pricing == 'per-day') selected @endif value="per-day">Per Day</option>
+                    <option @if($row->pricing == 'per-hour') selected @endif  value="per-hour">Per Hour</option>
+                </select>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>{{__("Price")}} <span class="text-danger">*</span></label>

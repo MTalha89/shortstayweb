@@ -83,6 +83,9 @@ class LoginController extends Controller
 
     public function socialCallBack($provider)
     {
+        
+        echo "hello";
+        exit;
         try {
             $this->initConfigs($provider);
 
@@ -116,6 +119,11 @@ class LoginController extends Controller
                 $realUser->password = Hash::make(uniqid() . time());
                 $realUser->name = $user->getName();
                 $realUser->first_name = $user->getName();
+                $realUser->address = $user->getName();
+                $realUser->city = $user->getName();
+                $realUser->phone = $user->getName();
+                $realUser->birthday = $user->getName();
+                $realUser->cnic = $user->getName();
                 $realUser->status = 'publish';
                 $realUser->email_verified_at = Carbon::now();
 
